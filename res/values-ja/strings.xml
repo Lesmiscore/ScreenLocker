@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="slock.text">トグルボタンをタッチすると、画面固定を切り替えできます。</string>
+	<string name="slock.on">画面固定ON</string>
+	<string name="slock.off">画面固定OFF</string>
+	
+	<string name="pinfo.bstate.wait">電池の状態: 取得中...</string>
+	<string name="pinfo.battery.wait">電池残量: 取得中...</string>
+	<string name="pinfo.wifipower.wait">Wi-Fi電波強度: 取得中...</string>
+	<string name="pinfo.wifipoint.wait">Wi-Fiアクセスポイント名: 取得中...</string>
+
+	<string name="pinfo.bstate.head">"電池の状態: "</string>
+	<string name="pinfo.battery.head">"電池残量: "</string>
+	<string name="pinfo.wifipower.head">"Wi-Fi電波強度: "</string>
+	<string name="pinfo.wifipoint.head">"Wi-Fiアクセスポイント名: "</string>
+
+	<string name="res.unknown">不明</string>
+	<string name="res.charging">充電中</string>
+	<string name="res.discharging">使用中</string>
+	<string name="res.not_charging">充電していません</string>
+	<string name="res.full">充電完了</string>
+</resources>

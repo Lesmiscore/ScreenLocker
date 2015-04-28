@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, MainActivity!</string>
     <string name="app_name">ScreenLocker</string>
+	<string name="slock.text">Tap this ToggleButton to pin the screen.</string>
+	<string name="slock.on">Screen Lock On</string>
+	<string name="slock.off">Screen Lock Off</string>
+	
+	<string name="pinfo.bstate.wait">Battery State: Getting...</string>
+	<string name="pinfo.battery.wait">Battery Level: Getting...</string>
+	<string name="pinfo.wifipower.wait">Wi-Fi Strength: Getting...</string>
+	<string name="pinfo.wifipoint.wait">Wi-Fi Accesspoint name: Getting...</string>
 
+	<string name="pinfo.bstate.head">"Battery State: "</string>
+	<string name="pinfo.battery.head">"Battery Power: "</string>
+	<string name="pinfo.wifipower.head">"Wi-Fi Strength: "</string>
+	<string name="pinfo.wifipoint.head">"Wi-Fi Accesspoint name: "</string>
+	
+	<string name="res.unknown">Unknown</string>
+	<string name="res.charging">Charging</string>
+	<string name="res.discharging">Discharging</string>
+	<string name="res.not_charging">Not charging</string>
+	<string name="res.full">Full</string>
 </resources>
