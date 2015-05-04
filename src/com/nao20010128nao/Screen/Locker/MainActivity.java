@@ -8,10 +8,18 @@ import android.content.*;
 import java.lang.ref.*;
 import android.net.wifi.*;
 import android.telephony.*;
+import android.preference.*;
+import android.app.admin.*;
+import android.util.*;
 
-public class MainActivity extends Activity
+public class MainActivity extends ActivityGroup
 {
+	static final int RESULT_ENABLE = 1;
+	LocalActivityManager lam;
+	ViewGroup prefDecor;
 	BatteryBroadcastReceiver bbr;
+	ComponentName mCN;
+	DevicePolicyManager mDPM;
 	static WeakReference<MainActivity> instance=new WeakReference<>(null);
     /** Called when the activity is first created. */
     @Override
@@ -31,6 +39,16 @@ public class MainActivity extends Activity
 				}else{
 					try{
 						stopLockTask();
+					}catch(Throwable e){
+						e.printStackTrace();
+					}
+					try{
+						AdditionalOptions ao=AdditionalOptions.instance.get();
+						PreferenceScreen ps=ao.getPreferenceScreen();
+						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.lock");
+						if(lock.isChecked())
+						if(mDPM.isAdminActive(mCN)) 
+							mDPM.lockNow();
 					}catch(Throwable e){
 						e.printStackTrace();
 					}
@@ -58,7 +76,34 @@ public class MainActivity extends Activity
 		IntentFilter intf=new IntentFilter();
 		intf.addAction("android.intent.action.BATTERY_CHANGED");
 		registerReceiver(bbr=new BatteryBroadcastReceiver(),intf);
-    }
+		lam=getLocalActivityManager();//new LocalActivityManager(this,false);
+		((LinearLayout)findViewById(R.id.add_prefs)).addView(prefDecor=(ViewGroup)lam.startActivity("prefs",new Intent(this,AdditionalOptions.class)).getDecorView());
+    	ViewGroup.LayoutParams lp=prefDecor.getLayoutParams();
+		lp.height=lp.width=ViewGroup.LayoutParams.MATCH_PARENT;
+		prefDecor.setLayoutParams(lp);
+		mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+		mCN = new ComponentName(this, MyDeviceReceiver.class);
+		AdditionalOptions ao=AdditionalOptions.instance.get();
+		PreferenceScreen ps=ao.getPreferenceScreen();
+		CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.lock");
+		lock.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+			public boolean onPreferenceChange(Preference pref,Object value){
+				if((boolean)value){
+					if (!mDPM.isAdminActive(mCN)) {
+						// デバイス管理者の登録
+						Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);  
+						intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mCN);
+						startActivityForResult(intent, RESULT_ENABLE);
+					} else {
+						
+					}
+				}else{
+					
+				}
+				return true;
+			}
+		});
+	}
 	@Override
 	protected void onDestroy()
 	{
@@ -117,5 +162,42 @@ public class MainActivity extends Activity
 				}
 			}
 		});
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+			case RESULT_ENABLE:
+				if (resultCode == Activity.RESULT_OK) {
+					// Has become the device administrator.
+					Log.i("tag", "Administration enabled!");
+					Toast.makeText(this,R.string.add_lock_enabled,1).show();
+				}else{
+					//Canceled or failed.
+					Log.i("tag", "Administration enable FAILED!");
+					Toast.makeText(this,R.string.add_lock_disable,1).show();
+				}
+				return;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	public static class AdditionalOptions extends PreferenceActivity
+	{
+		static WeakReference<AdditionalOptions> instance=new WeakReference<>(null);
+		@Override
+		protected void onCreate(Bundle savedInstanceState)
+		{
+			// TODO: Implement this method
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.additionals);
+			instance=new WeakReference<>(this);
+		}
+	}
+	public static class MyDeviceReceiver extends DeviceAdminReceiver {
+		@Override
+		public void onEnabled(Context context, Intent intent) {
+		}
+		@Override
+		public void onDisabled(Context context, Intent intent) {
+		}
 	}
 }

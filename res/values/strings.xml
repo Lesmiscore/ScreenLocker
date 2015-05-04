@@ -20,4 +20,9 @@
 	<string name="res.discharging">Discharging</string>
 	<string name="res.not_charging">Not charging</string>
 	<string name="res.full">Full</string>
+	
+	<string name="add.lock">Lock the phone when you unlocked the pin</string>
+	<string name="add.sysuihide">Hide the SystemUI until you unlock the pin</string>
+	<string name="add.lock.disable">Disabled. Please allow to use it for locking the phone.</string>
+	<string name="add.lock.enabled">Enabled.</string>
 </resources>
