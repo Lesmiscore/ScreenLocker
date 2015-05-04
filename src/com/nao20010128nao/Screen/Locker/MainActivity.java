@@ -42,10 +42,10 @@ public class MainActivity extends ActivityGroup
 						PreferenceScreen ps=ao.getPreferenceScreen();
 						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
 						if(lock.isChecked())
-							getWindow().getDecorView().
-								setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
-														View.SYSTEM_UI_FLAG_FULLSCREEN|// hide status bar
-														View.SYSTEM_UI_FLAG_IMMERSIVE);
+						getWindow().getDecorView().
+							setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
+													View.SYSTEM_UI_FLAG_FULLSCREEN|// hide status bar
+													View.SYSTEM_UI_FLAG_IMMERSIVE);
 					}catch(Throwable e){
 						e.printStackTrace();
 					}
@@ -221,8 +221,8 @@ public class MainActivity extends ActivityGroup
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-		if(!((ToggleButton)findViewById(R.id.slock_toggle)).isChecked())
-			return;
+		if(((ToggleButton)findViewById(R.id.slock_toggle)).isChecked())
+		if(((CheckBoxPreference)AdditionalOptions.instance.get().getPreferenceScreen().findPreference("add.lock")).isChecked())
 		if (hasFocus) {
 			getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
