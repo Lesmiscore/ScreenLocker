@@ -19,4 +19,9 @@
 	<string name="res.discharging">使用中</string>
 	<string name="res.not_charging">充電していません</string>
 	<string name="res.full">充電完了</string>
+	
+	<string name="add.lock">画面固定解除時に端末をロックする</string>
+	<string name="add.sysuihide">画面固定時にシステムUIを隠す</string>
+	<string name="add.lock.disable">無効化されました。この機能を使用するには、特別な許可が必要です。</string>
+	<string name="add.lock.enabled">有効化されました。</string>
 </resources>
