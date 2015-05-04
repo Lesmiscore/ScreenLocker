@@ -36,12 +36,14 @@ public class MainActivity extends ActivityGroup
 						e.printStackTrace();
 						btn.setChecked(false);
 					}
+					prefDecor.setVisibility(View.GONE);
 				}else{
 					try{
 						stopLockTask();
 					}catch(Throwable e){
 						e.printStackTrace();
 					}
+					prefDecor.setVisibility(View.VISIBLE);
 					try{
 						AdditionalOptions ao=AdditionalOptions.instance.get();
 						PreferenceScreen ps=ao.getPreferenceScreen();
@@ -180,12 +182,10 @@ public class MainActivity extends ActivityGroup
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	public static class AdditionalOptions extends PreferenceActivity
-	{
+	public static class AdditionalOptions extends PreferenceActivity{
 		static WeakReference<AdditionalOptions> instance=new WeakReference<>(null);
 		@Override
-		protected void onCreate(Bundle savedInstanceState)
-		{
+		protected void onCreate(Bundle savedInstanceState){
 			// TODO: Implement this method
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.additionals);
