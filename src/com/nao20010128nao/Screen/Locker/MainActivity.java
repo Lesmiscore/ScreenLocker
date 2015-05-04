@@ -43,9 +43,9 @@ public class MainActivity extends ActivityGroup
 						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
 						if(lock.isChecked())
 							getWindow().getDecorView().
-								setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE|
-													  View.SYSTEM_UI_FLAG_FULLSCREEN|
-													  View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+								setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
+														View.SYSTEM_UI_FLAG_FULLSCREEN|// hide status bar
+														View.SYSTEM_UI_FLAG_IMMERSIVE);
 					}catch(Throwable e){
 						e.printStackTrace();
 					}
@@ -216,6 +216,18 @@ public class MainActivity extends ActivityGroup
 		}
 		@Override
 		public void onDisabled(Context context, Intent intent) {
+		}
+	}
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+		if(!((ToggleButton)findViewById(R.id.slock_toggle)).isChecked())
+			return;
+		if (hasFocus) {
+			getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
+				View.SYSTEM_UI_FLAG_FULLSCREEN|// hide status bar
+				View.SYSTEM_UI_FLAG_IMMERSIVE);
 		}
 	}
 }
