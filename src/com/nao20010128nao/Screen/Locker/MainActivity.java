@@ -37,6 +37,18 @@ public class MainActivity extends ActivityGroup
 						btn.setChecked(false);
 					}
 					prefDecor.setVisibility(View.GONE);
+					try{
+						AdditionalOptions ao=AdditionalOptions.instance.get();
+						PreferenceScreen ps=ao.getPreferenceScreen();
+						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
+						if(lock.isChecked())
+							getWindow().getDecorView().
+								setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE|
+													  View.SYSTEM_UI_FLAG_FULLSCREEN|
+													  View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+					}catch(Throwable e){
+						e.printStackTrace();
+					}
 				}else{
 					try{
 						stopLockTask();
@@ -51,6 +63,16 @@ public class MainActivity extends ActivityGroup
 						if(lock.isChecked())
 						if(mDPM.isAdminActive(mCN)) 
 							mDPM.lockNow();
+					}catch(Throwable e){
+						e.printStackTrace();
+					}
+					try{
+						AdditionalOptions ao=AdditionalOptions.instance.get();
+						PreferenceScreen ps=ao.getPreferenceScreen();
+						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
+						if(lock.isChecked())
+							getWindow().getDecorView().
+								setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
 					}catch(Throwable e){
 						e.printStackTrace();
 					}
@@ -96,11 +118,7 @@ public class MainActivity extends ActivityGroup
 						Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);  
 						intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mCN);
 						startActivityForResult(intent, RESULT_ENABLE);
-					} else {
-						
 					}
-				}else{
-					
 				}
 				return true;
 			}
