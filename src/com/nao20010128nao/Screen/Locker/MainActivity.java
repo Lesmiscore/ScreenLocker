@@ -232,25 +232,61 @@ public class MainActivity extends ActivityGroup {
 	}
 	class ScreenBroadcastReceiver extends BroadcastReceiver {
 		@Override
-		public void onReceive(Context context, Intent intent) {
+		public void onReceive(Context c, Intent intent) {
 			String action = intent.getAction();
 			if (action != null) {
+				AdditionalOptions ao=AdditionalOptions.instance.get();
+				PreferenceScreen ps=ao.getPreferenceScreen();
+				CheckBoxPreference amb=(CheckBoxPreference)ps.findPreference("add.ambient");
+				if(amb.isChecked()){
+					return;
+				}
 				if (action.equals(Intent.ACTION_SCREEN_ON)) {
 					// 画面ON時
-
+					startActivity(new Intent(c,Ambient.class));
 				} else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
 					// 画面OFF時
-
+					Ambient a=Ambient.instance.get();
+					if(a!=null){
+						a.finish();
+					}
 				}
 			}
 		}
 	};
-	public static class AmbientActivity extends Activity {
-
+	public static class Ambient extends Activity {
+		DevicePolicyManager mDPM=MainActivity.instance.get().mDPM;
+		ComponentName mCN=MainActivity.instance.get().mCN;
+		static WeakReference<Ambient> instance=new WeakReference(null);
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			// TODO: Implement this method
 			super.onCreate(savedInstanceState);
+			setContentView(R.layout.ambient);
+			getWindow().getDecorView().setOnLongClickListener(new View.OnLongClickListener(){
+				public boolean onLongClick(View v){
+					finish();
+					return true;
+				}
+			});
+			new Thread(){
+				public void run(){
+					try {
+						sleep(1500);
+					} catch (InterruptedException e) {
+						
+					}
+					if (mDPM.isAdminActive(mCN)) 
+						mDPM.lockNow();
+					runOnUiThread(new Runnable(){
+						public void run(){
+							finish();
+						}
+					});
+				}
+			}.start();
+			getActionBar().hide();
+			instance=new WeakReference(this);
 		}
 	}
 }

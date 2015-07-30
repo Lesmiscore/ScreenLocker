@@ -7,4 +7,7 @@
 	<CheckBoxPreference
 		android:key="add.sysuihide"
 		android:title="@string/add.sysuihide"/>
+	<CheckBoxPreference
+		android:key="add.ambient"
+		android:title="@string/add.ambient"/>
 </PreferenceScreen>

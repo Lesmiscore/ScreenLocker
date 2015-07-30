@@ -25,4 +25,7 @@
 	<string name="add.sysuihide">Hide the SystemUI until you unlock the pin</string>
 	<string name="add.lock.disable">Disabled. Please allow to use it for locking the phone.</string>
 	<string name="add.lock.enabled">Enabled.</string>
+	<string name="add.ambient">Pre-Ambient Mode</string>
+	
+	<string name="ambient.screen">Long tap to get back the screen.\nThe screen will be turned off after 1.5 seconds.</string>
 </resources>
