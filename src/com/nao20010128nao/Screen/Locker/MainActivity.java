@@ -250,4 +250,12 @@ public class MainActivity extends ActivityGroup
 			}
 		}
 	};
+	public static class AmbientActivity extends Activity {
+
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			// TODO: Implement this method
+			super.onCreate(savedInstanceState);
+		}
+	}
 }
