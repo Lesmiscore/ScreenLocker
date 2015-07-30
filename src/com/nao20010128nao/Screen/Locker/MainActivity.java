@@ -18,6 +18,7 @@ public class MainActivity extends ActivityGroup
 	LocalActivityManager lam;
 	ViewGroup prefDecor;
 	BatteryBroadcastReceiver bbr;
+	ScreenBroadcastReceiver  sbr;
 	ComponentName mCN;
 	DevicePolicyManager mDPM;
 	static WeakReference<MainActivity> instance=new WeakReference<>(null);
@@ -100,6 +101,10 @@ public class MainActivity extends ActivityGroup
 		IntentFilter intf=new IntentFilter();
 		intf.addAction("android.intent.action.BATTERY_CHANGED");
 		registerReceiver(bbr=new BatteryBroadcastReceiver(),intf);
+		intf=new IntentFilter();
+		intf.addAction(Intent.ACTION_SCREEN_ON);
+		intf.addAction(Intent.ACTION_SCREEN_OFF);
+		registerReceiver(sbr=new ScreenBroadcastReceiver(),intf);
 		lam=getLocalActivityManager();//new LocalActivityManager(this,false);
 		((LinearLayout)findViewById(R.id.add_prefs)).addView(prefDecor=(ViewGroup)lam.startActivity("prefs",new Intent(this,AdditionalOptions.class)).getDecorView());
     	ViewGroup.LayoutParams lp=prefDecor.getLayoutParams();
@@ -230,4 +235,19 @@ public class MainActivity extends ActivityGroup
 				View.SYSTEM_UI_FLAG_IMMERSIVE);
 		}
 	}
+	class ScreenBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action != null) {
+				if (action.equals(Intent.ACTION_SCREEN_ON)) {
+					// 画面ON時
+					
+				} else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
+					// 画面OFF時
+					
+				}
+			}
+		}
+	};
 }
