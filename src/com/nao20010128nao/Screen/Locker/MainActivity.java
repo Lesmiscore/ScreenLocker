@@ -12,8 +12,7 @@ import android.preference.*;
 import android.app.admin.*;
 import android.util.*;
 
-public class MainActivity extends ActivityGroup
-{
+public class MainActivity extends ActivityGroup {
 	static final int RESULT_ENABLE = 1;
 	LocalActivityManager lam;
 	ViewGroup prefDecor;
@@ -24,91 +23,90 @@ public class MainActivity extends ActivityGroup
 	static WeakReference<MainActivity> instance=new WeakReference<>(null);
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState)
-	{
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		((ToggleButton)findViewById(R.id.slock_toggle)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-			public void onCheckedChanged(CompoundButton btn,boolean b){
-				if(b){
-					try{
-						startLockTask();
-					}catch(Throwable e){
-						e.printStackTrace();
-						btn.setChecked(false);
-					}
-					prefDecor.setVisibility(View.GONE);
-					try{
-						AdditionalOptions ao=AdditionalOptions.instance.get();
-						PreferenceScreen ps=ao.getPreferenceScreen();
-						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
-						if(lock.isChecked())
-						getWindow().getDecorView().
-							setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
-													View.SYSTEM_UI_FLAG_FULLSCREEN|// hide status bar
-													View.SYSTEM_UI_FLAG_IMMERSIVE);
-					}catch(Throwable e){
-						e.printStackTrace();
-					}
-				}else{
-					try{
-						stopLockTask();
-					}catch(Throwable e){
-						e.printStackTrace();
-					}
-					prefDecor.setVisibility(View.VISIBLE);
-					try{
-						AdditionalOptions ao=AdditionalOptions.instance.get();
-						PreferenceScreen ps=ao.getPreferenceScreen();
-						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.lock");
-						if(lock.isChecked())
-						if(mDPM.isAdminActive(mCN)) 
-							mDPM.lockNow();
-					}catch(Throwable e){
-						e.printStackTrace();
-					}
-					try{
-						AdditionalOptions ao=AdditionalOptions.instance.get();
-						PreferenceScreen ps=ao.getPreferenceScreen();
-						CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
-						if(lock.isChecked())
-							getWindow().getDecorView().
-								setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-					}catch(Throwable e){
-						e.printStackTrace();
+				public void onCheckedChanged(CompoundButton btn, boolean b) {
+					if (b) {
+						try {
+							startLockTask();
+						} catch (Throwable e) {
+							e.printStackTrace();
+							btn.setChecked(false);
+						}
+						prefDecor.setVisibility(View.GONE);
+						try {
+							AdditionalOptions ao=AdditionalOptions.instance.get();
+							PreferenceScreen ps=ao.getPreferenceScreen();
+							CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
+							if (lock.isChecked())
+								getWindow().getDecorView().
+									setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |// hide nav bar
+														  View.SYSTEM_UI_FLAG_FULLSCREEN |// hide status bar
+														  View.SYSTEM_UI_FLAG_IMMERSIVE);
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
+					} else {
+						try {
+							stopLockTask();
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
+						prefDecor.setVisibility(View.VISIBLE);
+						try {
+							AdditionalOptions ao=AdditionalOptions.instance.get();
+							PreferenceScreen ps=ao.getPreferenceScreen();
+							CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.lock");
+							if (lock.isChecked())
+								if (mDPM.isAdminActive(mCN)) 
+									mDPM.lockNow();
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
+						try {
+							AdditionalOptions ao=AdditionalOptions.instance.get();
+							PreferenceScreen ps=ao.getPreferenceScreen();
+							CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.sysuihide");
+							if (lock.isChecked())
+								getWindow().getDecorView().
+									setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
 					}
 				}
-			}
-		});
-		instance=new WeakReference<>(this);
+			});
+		instance = new WeakReference<>(this);
 		new AsyncTask<Void,Void,Void>(){
-			public Void doInBackground(Void[] unused){
+			public Void doInBackground(Void[] unused) {
 				WifiManager wm=(WifiManager)getSystemService(WIFI_SERVICE);
-				while(true){
+				while (true) {
 					WifiInfo info=wm.getConnectionInfo();
-					if(info!=null){
-						setTextIfPossible(R.id.pinfo_wifipoint,getString(R.string.pinfo_wifipoint_head)+info.getSSID());
-						setTextIfPossible(R.id.pinfo_wifipower,getString(R.string.pinfo_wifipower_head)+info.getRssi());
+					if (info != null) {
+						setTextIfPossible(R.id.pinfo_wifipoint, getString(R.string.pinfo_wifipoint_head) + info.getSSID());
+						setTextIfPossible(R.id.pinfo_wifipower, getString(R.string.pinfo_wifipower_head) + info.getRssi());
 					}
-					try{
+					try {
 						Thread.sleep(100);
-					}catch (InterruptedException e){
-						
+					} catch (InterruptedException e) {
+
 					}
 				}
 			}
 		}.execute();
 		IntentFilter intf=new IntentFilter();
 		intf.addAction("android.intent.action.BATTERY_CHANGED");
-		registerReceiver(bbr=new BatteryBroadcastReceiver(),intf);
-		intf=new IntentFilter();
+		registerReceiver(bbr = new BatteryBroadcastReceiver(), intf);
+		intf = new IntentFilter();
 		intf.addAction(Intent.ACTION_SCREEN_ON);
 		intf.addAction(Intent.ACTION_SCREEN_OFF);
-		registerReceiver(sbr=new ScreenBroadcastReceiver(),intf);
-		lam=getLocalActivityManager();//new LocalActivityManager(this,false);
-		((LinearLayout)findViewById(R.id.add_prefs)).addView(prefDecor=(ViewGroup)lam.startActivity("prefs",new Intent(this,AdditionalOptions.class)).getDecorView());
+		registerReceiver(sbr = new ScreenBroadcastReceiver(), intf);
+		lam = getLocalActivityManager();//new LocalActivityManager(this,false);
+		((LinearLayout)findViewById(R.id.add_prefs)).addView(prefDecor = (ViewGroup)lam.startActivity("prefs", new Intent(this, AdditionalOptions.class)).getDecorView());
     	ViewGroup.LayoutParams lp=prefDecor.getLayoutParams();
-		lp.height=lp.width=ViewGroup.LayoutParams.MATCH_PARENT;
+		lp.height = lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
 		prefDecor.setLayoutParams(lp);
 		mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
 		mCN = new ComponentName(this, MyDeviceReceiver.class);
@@ -116,33 +114,30 @@ public class MainActivity extends ActivityGroup
 		PreferenceScreen ps=ao.getPreferenceScreen();
 		CheckBoxPreference lock=(CheckBoxPreference)ps.findPreference("add.lock");
 		lock.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-			public boolean onPreferenceChange(Preference pref,Object value){
-				if((boolean)value){
-					if (!mDPM.isAdminActive(mCN)) {
-						// デバイス管理者の登録
-						Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);  
-						intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mCN);
-						startActivityForResult(intent, RESULT_ENABLE);
+				public boolean onPreferenceChange(Preference pref, Object value) {
+					if ((boolean)value) {
+						if (!mDPM.isAdminActive(mCN)) {
+							// デバイス管理者の登録
+							Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);  
+							intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mCN);
+							startActivityForResult(intent, RESULT_ENABLE);
+						}
 					}
+					return true;
 				}
-				return true;
-			}
-		});
+			});
 	}
 	@Override
-	protected void onDestroy()
-	{
+	protected void onDestroy() {
 		// TODO: Implement this method
 		super.onDestroy();
 		unregisterReceiver(bbr);
 	}
-	public static class BatteryBroadcastReceiver extends BroadcastReceiver
-	{
+	public static class BatteryBroadcastReceiver extends BroadcastReceiver {
 		@Override
-		public void onReceive(Context p1, Intent intent)
-		{
+		public void onReceive(Context p1, Intent intent) {
 			// TODO: Implement this method
-			if(!intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED))
+			if (!intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED))
 				return;
 			int status = intent.getIntExtra("status", 0);
 			int health = intent.getIntExtra("health", 0);
@@ -174,19 +169,19 @@ public class MainActivity extends ActivityGroup
                     statusRes += p1.getString(R.string.res_full);
                     break;
 			}
-			setTextIfPossible(R.id.pinfo_bstate,statusRes);
-			setTextIfPossible(R.id.pinfo_battery,p1.getString(R.string.pinfo_battery_head)+(int)Math.floor(level/scale*100)+"%");
+			setTextIfPossible(R.id.pinfo_bstate, statusRes);
+			setTextIfPossible(R.id.pinfo_battery, p1.getString(R.string.pinfo_battery_head) + (int)Math.floor(level / scale * 100) + "%");
 		}
 	}
-	public static void setTextIfPossible(final int id,final String text){
-		if(instance.get()==null)return;
+	public static void setTextIfPossible(final int id, final String text) {
+		if (instance.get() == null)return;
 		instance.get().runOnUiThread(new Runnable(){
-			public void run(){
-				synchronized(instance.get()){
-					((TextView)instance.get().findViewById(id)).setText(text);
+				public void run() {
+					synchronized (instance.get()) {
+						((TextView)instance.get().findViewById(id)).setText(text);
+					}
 				}
-			}
-		});
+			});
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -195,24 +190,24 @@ public class MainActivity extends ActivityGroup
 				if (resultCode == Activity.RESULT_OK) {
 					// Has become the device administrator.
 					Log.i("tag", "Administration enabled!");
-					Toast.makeText(this,R.string.add_lock_enabled,1).show();
-				}else{
+					Toast.makeText(this, R.string.add_lock_enabled, 1).show();
+				} else {
 					//Canceled or failed.
 					Log.i("tag", "Administration enable FAILED!");
-					Toast.makeText(this,R.string.add_lock_disable,1).show();
+					Toast.makeText(this, R.string.add_lock_disable, 1).show();
 				}
 				return;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	public static class AdditionalOptions extends PreferenceActivity{
+	public static class AdditionalOptions extends PreferenceActivity {
 		static WeakReference<AdditionalOptions> instance=new WeakReference<>(null);
 		@Override
-		protected void onCreate(Bundle savedInstanceState){
+		protected void onCreate(Bundle savedInstanceState) {
 			// TODO: Implement this method
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.additionals);
-			instance=new WeakReference<>(this);
+			instance = new WeakReference<>(this);
 		}
 	}
 	public static class MyDeviceReceiver extends DeviceAdminReceiver {
@@ -226,14 +221,14 @@ public class MainActivity extends ActivityGroup
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-		if(((ToggleButton)findViewById(R.id.slock_toggle)).isChecked())
-		if(((CheckBoxPreference)AdditionalOptions.instance.get().getPreferenceScreen().findPreference("add.lock")).isChecked())
-		if (hasFocus) {
-			getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|// hide nav bar
-				View.SYSTEM_UI_FLAG_FULLSCREEN|// hide status bar
-				View.SYSTEM_UI_FLAG_IMMERSIVE);
-		}
+		if (((ToggleButton)findViewById(R.id.slock_toggle)).isChecked())
+			if (((CheckBoxPreference)AdditionalOptions.instance.get().getPreferenceScreen().findPreference("add.lock")).isChecked())
+				if (hasFocus) {
+					getWindow().getDecorView().setSystemUiVisibility(
+						View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |// hide nav bar
+						View.SYSTEM_UI_FLAG_FULLSCREEN |// hide status bar
+						View.SYSTEM_UI_FLAG_IMMERSIVE);
+				}
 	}
 	class ScreenBroadcastReceiver extends BroadcastReceiver {
 		@Override
@@ -242,10 +237,10 @@ public class MainActivity extends ActivityGroup
 			if (action != null) {
 				if (action.equals(Intent.ACTION_SCREEN_ON)) {
 					// 画面ON時
-					
+
 				} else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
 					// 画面OFF時
-					
+
 				}
 			}
 		}
