@@ -238,7 +238,7 @@ public class MainActivity extends ActivityGroup {
 				AdditionalOptions ao=AdditionalOptions.instance.get();
 				PreferenceScreen ps=ao.getPreferenceScreen();
 				CheckBoxPreference amb=(CheckBoxPreference)ps.findPreference("add.ambient");
-				if(amb.isChecked()){
+				if(!amb.isChecked()){
 					return;
 				}
 				if (action.equals(Intent.ACTION_SCREEN_ON)) {
@@ -269,10 +269,13 @@ public class MainActivity extends ActivityGroup {
 					return true;
 				}
 			});
+			getWindow().setNavigationBarColor(0);
+			getWindow().setStatusBarColor(0);
+			
 			new Thread(){
 				public void run(){
 					try {
-						sleep(1500);
+						sleep(1000);
 					} catch (InterruptedException e) {
 						
 					}
